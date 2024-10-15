@@ -87,7 +87,7 @@ function loadEventListeners(){
 }
 
 // Función para agregar producto al carrito
-function addProduct(e){
+function addProduct(e) {
     e.preventDefault();
     if (e.target.classList.contains('btn-add-cart')) {
         const selectProduct = e.target.parentElement;
@@ -95,7 +95,6 @@ function addProduct(e){
     }
 }
 
-// Función para borrar un producto
 function deleteProduct(e) {
     // Verificar si se hizo clic en el botón de eliminar (X)
     if (e.target.classList.contains('delete-product')) {
@@ -110,7 +109,10 @@ function deleteProduct(e) {
             // Restar el total del precio del producto y la cantidad
             totalCard -= product.price * product.amount;
             countProduct -= product.amount;
-            
+
+            // Restaurar el stock del producto
+            productData[productId].stock += product.amount;
+
             // Eliminar el producto del array buyThings
             buyThings.splice(productIndex, 1);
             
@@ -119,6 +121,7 @@ function deleteProduct(e) {
         }
     }
 }
+
 
 
 // Función para actualizar el total y el conteo
@@ -130,7 +133,6 @@ function updateTotalAndCount() {
 }
 
 
-// Función para leer contenido del producto
 function readTheContent(product) {
     const productId = product.querySelector('a').getAttribute('data-id');
     const priceText = product.querySelector('div p span[data-original-price]').getAttribute('data-original-price');
@@ -138,53 +140,65 @@ function readTheContent(product) {
     const infoProduct = {
         image: product.querySelector('div img').src,
         title: product.querySelector('.title').textContent,
-        price: parseFloat(priceText), // Convertir el precio a número
+        price: parseFloat(priceText),
         id: productId,
-        amount: 1
-    }
+        amount: 1,
+        stock: parseInt(product.querySelector('.stock').getAttribute('data-stock'))
+    };
 
-    // Comprobar si el precio es válido
-    if (isNaN(infoProduct.price)) {
-        console.error(`El precio no es un número: ${priceText}`);
-        return; // Salir si hay un problema con el precio
-    }
-
-    totalCard = parseFloat(totalCard) + infoProduct.price;
-    totalCard = totalCard.toFixed(2);
-
-    const exist = buyThings.some(product => product.id === infoProduct.id);
+    const exist = buyThings.find(product => product.id === infoProduct.id);
     if (exist) {
-        const pro = buyThings.map(product => {
-            if (product.id === infoProduct.id) {
-                product.amount++;
-                return product;
-            } else {
-                return product;
-            }
-        });
-        buyThings = [...pro];
+        if (exist.amount < infoProduct.stock) {
+            exist.amount++; 
+            infoProduct.stock--; // Reducir el stock
+            updateStockDisplay(infoProduct.id, infoProduct.stock);
+        } else {
+            alert('No hay suficiente stock disponible'); 
+            return;
+        }
     } else {
-        buyThings = [...buyThings, infoProduct];
-        countProduct++;
+        if (infoProduct.stock > 0) {
+            infoProduct.stock--; // Reducir el stock disponible al añadir el producto por primera vez
+            buyThings.push(infoProduct); 
+            countProduct++; 
+            updateStockDisplay(infoProduct.id, infoProduct.stock);
+        } else {
+            alert('Producto agotado'); 
+            return;
+        }
     }
-    loadHtml();
+
+    totalCard = parseFloat(totalCard) + infoProduct.price; 
+    totalCard = totalCard.toFixed(2); 
+
+    loadHtml(); 
+}
+
+
+function updateStockDisplay(productId, newStock) {
+    const productElement = document.querySelector(`.carts[data-id="${productId}"] .stock`);
+    if (productElement) {
+        productElement.textContent = `Stock: ${newStock}`;
+        productElement.setAttribute('data-stock', newStock);
+    }
 }
 
 
 // Función para cargar el HTML del carrito
 function loadHtml() {
-    clearHtml();
-    buyThings.forEach(product => {
-        const {image, title, price, amount, id} = product;
-        const row = document.createElement('div');
-        row.classList.add('item');
+    clearHtml(); // Limpiar el HTML del carrito
+    buyThings.forEach(product => { // Iterar sobre los productos en el carrito
+        const {image, title, price, amount, id, stock} = product; // Desestructurar el objeto del producto
+        const row = document.createElement('div'); // Crear un nuevo div para el producto
+        row.classList.add('item'); // Añadir clase 'item' al div
         row.innerHTML = `
             <img src="${image}" alt="">
             <div class="item-content">
                 <h5>${title}</h5>
-                <h5 class="cart-price">${formatPrice(price)} ${currentCurrency === 'PEN' ? 'S/.' : '$'}</h5>
+                <h5 class="cart-price">S/. ${formatPrice(price)}</h5>
                 <div class="amount-container">
-                    <h6>Amount: ${amount}</h6>
+                    <h6>Cantidad: ${amount}</h6>
+                    <h6>Stock disponible: ${stock}</h6> <!-- Mostrar el stock disponible -->
                     <div class="quantity-controls">
                         <button class="decrease-btn" data-id="${id}">-</button>
                         <input type="text" class="quantity-input" value="${amount}" data-id="${id}" readonly>
@@ -195,15 +209,17 @@ function loadHtml() {
             <span class="delete-product" data-id="${id}">X</span>
         `;
 
-        containerBuyCart.appendChild(row);
+        containerBuyCart.appendChild(row); // Añadir el producto al contenedor del carrito
     });
 
-    priceTotal.innerHTML = `${currentCurrency === 'PEN' ? 'S/.' : '$'} ${formatPrice(totalCard)}`;
-    amountProduct.innerHTML = countProduct;
+    priceTotal.innerHTML = `S/. ${formatPrice(totalCard)}`; // Actualizar el total en el carrito
+    amountProduct.innerHTML = countProduct; // Actualizar la cantidad de productos en el carrito
     
     // Añadir eventos a los botones de aumentar y disminuir cantidad
     addQuantityButtonListeners();
 }
+
+
 
 // Función para añadir eventos a los botones de cantidad
 function addQuantityButtonListeners() {
@@ -219,6 +235,7 @@ function addQuantityButtonListeners() {
     });
 }
 
+
 // Función para manejar el aumento de cantidad
 function handleIncreaseQuantity(event) {
     const productId = event.target.getAttribute('data-id');
@@ -231,19 +248,34 @@ function handleDecreaseQuantity(event) {
     updateProductQuantity(productId, -1);
 }
 
-// Función para actualizar la cantidad de un producto
 function updateProductQuantity(productId, change) {
-    const product = buyThings.find(product => product.id === productId);
+    const product = buyThings.find(product => product.id === productId); // Buscar el producto en el carrito
 
     if (product) {
-        product.amount += change;
-        if (product.amount < 1) product.amount = 1; // Asegurar que la cantidad mínima sea 1
+        const newAmount = product.amount + change;
 
+        // Verificar si la cantidad deseada está dentro del rango permitido por el stock
+        if (newAmount > product.stock + product.amount) {
+            alert('No hay suficiente stock disponible');
+            return;
+        } else if (newAmount < 1) {
+            alert('La cantidad mínima es 1');
+            return; // Asegurarse de que la cantidad mínima sea 1
+        } else {
+            product.amount = newAmount; // Actualizar la cantidad
+            product.stock -= change; // Ajustar el stock al aumentar/disminuir cantidad
+            updateStockDisplay(productId, product.stock); // Actualizar la visualización del stock
+        }
+
+        // Actualizar el total del carrito
         totalCard = buyThings.reduce((sum, item) => sum + (parseFloat(item.price) * item.amount), 0).toFixed(2);
 
         loadHtml(); // Recargar el carrito con las cantidades actualizadas
     }
 }
+
+
+
 
 // Función para formatear el precio
 function formatPrice(price) {
@@ -360,19 +392,3 @@ function searchProducts(){
         }
     });
 }
-
-// ALERTA 
-document.querySelector('.btn-comprar').addEventListener('click', function() {
-    Swal.fire({
-        title: '¡Compra realizada!',
-        text: 'Gracias por tu compra. Procesaremos tu pedido.',
-        icon: 'success',
-        confirmButtonText: 'Aceptar'
-    }).then(() => {
-        // Vaciar el carrito después de la compra
-        buyThings = [];
-        totalCard = 0;
-        countProduct = 0;
-        loadHtml();
-    });
-});
