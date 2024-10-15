@@ -1,0 +1,331 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: top;
+    height: 100v
+}
+
+/*VIDEO*/
+video {
+    width: 100vw;
+    height: auto; 
+    max-height: 110vh;
+    object-fit: cover;
+    z-index: -1; 
+    opacity: 0.5; 
+}
+
+/*ENCABEZADO*/
+header {
+    background-color: rgba(0, 0, 0, 0.5); /* Aumenta la opacidad del fondo */
+    padding-top: 18px;
+    padding-bottom: 18px;
+    position: fixed;
+    width: 100%;
+    margin-top: -10px;
+    z-index: 10;
+    border-bottom: 2px solid white; /*LINEA DEBAJO DE LA BARRA*/
+}
+
+/*LOGO*/
+.header-section .logo {
+    width: 100px; 
+    height: 75px; 
+}
+
+/* Barra de búsqueda */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.search-bar input {
+    padding: 10px;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+.search-bar button {
+    padding: 10px 15px;
+    background-color: #5ED0FF;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #77D7FE;
+}
+
+/* Selección de idioma y moneda */
+.language-currency {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.language-currency select {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #5ED0FF;
+}
+
+/*CONTENEDOR*/
+.container{
+    max-width: 1200px;
+    text-align: center;
+    margin: auto;
+}
+/*ENCABEZADO*/
+.header-section{
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    align-items: center;
+    position: relative;
+}
+.header-section div{
+    position: relative;
+}
+.header-section p{
+    position: absolute;
+    top: -24px;
+    right: -8px;
+    background-color: #fff;
+    padding: 1px 6px;
+    border-radius: 50%;
+    color: black;
+    font-weight: 700;
+    font-family: system-ui;
+    line-height: 18px;
+}
+/*TAMAÑO DEL LOGO*/
+.logo{
+    width: 164px;
+    height: 84px;
+    cursor: pointer;
+}
+
+/*CARRITO*/
+.cart {
+    width: 39px;
+    height: 38px;
+    background-image: url('cart-icon.png'); /* Imagen normal del carrito */
+    background-size: contain; /* Ajusta el tamaño de la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el carrito */
+}
+
+/*JUEGOS EN EL CARRITO*/
+.cart-products{
+    position: absolute!important;
+    top: 82px;
+    right: -18px;
+    background-color: #fff;
+    padding: 0 18px;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 20%);
+    display: none;
+    min-width: 290px;
+}
+
+/*ANIMACIÓN AL PASAR EL PUNTERO POR EL CARRITO*/
+.cart:hover{
+    margin-bottom: 16px;
+    transition-duration: .5s;
+}
+/*end header*/
+
+/*PRODUCTOS*/
+.products{
+    padding-top: 170px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    text-align: center;
+}
+
+/*IMAGENES DE LOS JUEGOS*/
+.products .carts img{
+    width: 90%;
+    border-radius: 5px;
+
+}
+
+/*FONDO DE LOS JUEGOS*/
+.carts{
+    max-width: 250px;
+    box-shadow: 0 3px 10px rgb(0 0 0 / 20%);
+    padding-bottom: 34px;
+    margin-bottom: 40px;
+    border-radius: 5px;
+
+}
+
+/*TITULOS DE LOS JUEGOS*/
+.carts p{
+    font-family: system-ui;
+    font-weight: 500;
+    padding: 0 20px;
+    margin-bottom: 24px;
+}
+
+/*ETIQUETAS DE PRECIO*/
+.carts div p{
+    position: absolute;
+    top: 0;
+    right: 0px;
+    background-color: #5ED0FF;
+    color: #fff;
+    padding: 2px 7px 4px 21px;
+    clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 25% 100%, 0% 50%); /*Forma de la etiqueta*/
+}
+.carts div{
+    position: relative;
+}
+
+/*BOTON DE AGREGAR AL CARRITO*/
+.carts a{
+    font-family: system-ui;
+    text-decoration: none;
+    background: #5ED0FF;
+    padding: 9px 23px;
+    color: #fff;
+    font-size: 17px;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 50px;
+}
+
+.carts a:hover{
+    background: #fff;
+    color: #77D7FE;
+    border: solid 2px #77D7FE;
+    transition-duration: .3s;
+}
+
+/*CARRITO DE COMPRAS*/
+.cart-products .item img{
+    width: 115px;
+}
+
+/*JUEGOS EN EL CARRITO*/
+.cart-products .item{
+    display: flex;
+    align-items: center;
+    border-bottom: solid 2px #77D7FE;
+}
+
+/*INFORMACIÓN DE LOS JUEGOS EN EL CARRITO*/
+.cart-products .item .item-content{
+    margin: 0 19px;
+    width: 201px;
+}
+
+/*NOMBRE DEL JUEGO*/
+.cart-products .item .item-content h5{
+    margin: 0;
+    font-size: 15px;
+    font-weight: 400;
+    font-family: system-ui;
+}
+.cart-products .item .item-content h6{
+    margin: 0;
+    font-size: 13px;
+    font-weight: 400;
+    font-family: system-ui;
+}
+
+/*BOTON DE QUITAR PRODUCTOS*/
+.cart-products .item span{
+    background-color: red;
+    padding: 0px 5px;
+    border-radius: 50%;
+    color: #fff;
+    font-family: system-ui;
+    cursor: pointer;
+}
+.cart-products h3{
+    margin-bottom: 0;
+}
+
+/*PRECIO*/
+.cart-products .item .item-content h5.cart-price{
+    font-weight: 700;
+}
+
+/*CERRAR CARRITO*/
+p.close-btn{
+    top: -4px;
+    right: 6px;
+    cursor: pointer;
+    color: #000;
+}
+
+/* EFECTO Y CAMBIO DE COLOR DE LOS JUEGOS */
+.carts:hover {
+    transform: scale(1.05);
+    background-color: rgba(82, 89, 102, 0.3);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .header-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    .products {
+        flex-direction: column;
+        align-items: center;
+    }
+    .carts {
+        max-width: 100%;
+    }
+}
+
+.amount-container {
+    display: flex;
+    align-items: center;
+    gap: 5px; 
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+}
+
+.decrease-btn, .increase-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.quantity-input {
+    width: 40px;
+    text-align: center;
+    border: 1px solid #ccc;
+    height: 30px;
+}
+
+.user-info a {
+    text-decoration: none; 
+    color: #fff; 
+    display: inline-block; 
+    margin-left: 15px;
+}
+
+#cart-text {
+    text-decoration: none; 
+    color: #fff;  
+    display: inline-block; 
+    margin-left: 10px;
+}
